@@ -27,7 +27,6 @@ export async function POST(req: Request) {
   try {
     await client.query("BEGIN"); // Start the transaction
     const body = await req.json();
-    console.log("Incoming body:", body);
 
     const {
       name,

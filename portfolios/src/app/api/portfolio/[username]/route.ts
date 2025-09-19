@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 import { pool } from "@/lib/db";
 
-export async function GET(
-  request: Request,
-  // Apply the fix here 👇
-  { params: { username } }: { params: { username: string } }
-) {
+export async function GET(request: Request, props: { params: Promise<{ username: string }> }) {
+  const params = await props.params;
+
+  const {
+    username
+  } = params;
 
   if (!username) {
     return NextResponse.json({ error: "Username is required" }, { status: 400 });
@@ -18,8 +19,6 @@ export async function GET(
       "SELECT * FROM portfolio WHERE username = $1",
       [username]
     );
-
-    console.log("Database query result:", result.rows);
 
     if (result.rowCount === 0) {
       return NextResponse.json({ error: "Portfolio not found" }, { status: 404 });
